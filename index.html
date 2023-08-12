@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>teachablemachine</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Monoton&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=IBM+Plex+Mono:wght@200&family=Monoton&display=swap" rel="stylesheet">
+    </head>
+    <body style="background-color: lightblue;">
+        <center>
+
+        
+        <h1 class="btn btn-success" style=" font-size: 45px; font-family: 'IBM Plex Mono';" >Hand Gesturing Identification</h1>
+        <p style="font-family: 'IBM Plex Mono';">Use Your Hands To Make Gestures Like The Numbers One, Two and Three</p>
+        <br>
+    </center>
+        
+        <p style="padding-left: 320px;">Powered By: Teachable Machine, Google.inc</p>
+    <center>
+        <section>
+        <br><br><br>
+        <label style="font-size: 30px;">This Is Your <label style="font-family: 'IBM Plex Mono';">CAMERA</label></label>
+        <div id="camera"></div>
+        <button onclick="take_snapshot()" class="btn btn-warning">Click For Selfie</button>
+        <label style="font-size: 30px;">This Is Your <label style="font-family: 'IBM Plex Mono';">Picture</label></label>
+        <div id="result"></div>
+        <button onclick="check()" class="btn btn-success">Click To Verify</button>
+        <label id="finaltmd"
+    </section>  
+    </center>
+    
+
+        
+    </body>
+    <script>
+                 Webcam.set({
+                    width:350,
+                    height:300,
+                    image_format: 'png',
+                    png_quality:90
+                });
+
+                camera = document.getElementById("camera");
+
+                Webcam.attach( '#camera' );
+
+                function take_snapshot() 
+                {
+                    Webcam.snap(function(data_uri) {
+                        document.getElementById("result").innerHTML = "<img id='captured_image' src='" + data_uri + "'/>" 
+                    })
+                }
+
+                console.log('ml5 version', ml5.version);
+
+                classifier = ml5.imageClassifier('',modelLoaded);
+
+                function modelLoaded() {
+                    console.log("Model Loaded!")
+                }
+
+                function speak()
+                {
+                    var synth = window.speechSynthesis;
+                    speak_data_1 = "the first prediction is " + prediction_1;
+                    var utterThis = new SpeechSynthesisUtterance(speak_data_1);
+                    synth.speak(utterThis); 
+                }
+                
+                
+                function check() 
+                {
+                    img = document.getElementById('captured_image');
+                    classifier.classify(img,gotResult);
+                }
+
+                function gotResult(error, results) 
+                {
+                    if(error) {
+                        console.log("Technical Difficulties, Please Stand By");}
+                    
+                    if(results) 
+                    {
+                        console.log(results)
+                        document.getElementById("finaltmd").innerHTML = results[0].label;                        
+                        prediction_1 = results[0].label;
+                        speak();
+                      
+                    }
+                }
+    </script>
+</html>
